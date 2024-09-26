@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The SearJar</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="./chart.js"></script>
+  <link href="assets/google-icons1.css" rel="stylesheet">
+
+</head>
+<body>
+  <div class="tileBar">
+    <div class="icon"><img src="assets/icon.png"  class="tIcon"></div>
+    <div class="controls">
+      <div class="minimize"><span style="font-size: .75em;" class="material-icons">minimize</span></div>
+      <div class="maximize"><span style="font-size: .5em;" class="material-icons">check_box_outline_blank</span></div>
+      <div class="close"><span style="font-size: .75em;padding-top: 8px;" class="material-icons">close</span></div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="column">
+      <h1>SWEARS TODAY:</h1>
+      <div id="count">0</div>
+      <div class="analytics">
+       
+
+        <script>
+          window.electronAPI.onUpdateCount((event, count) => {
+            document.getElementById('count').innerText = count;
+          });
+        
+          // Load records on startup
+          window.electronAPI.loadRecords((event, records) => {
+            const recordsDiv = document.getElementById('records');
+            let tempDate, dates = [], values = [];
+        
+            // Populate dates and values arrays, and update sidebar
+            records.forEach(record => {
+              dates.push(record.date);      // Add date to dates array
+              values.push(record.count);    // Add count to values array
+        
+              const recordElement = document.createElement('div');
+              recordElement.className = 'record';
+        
+              // Format the date as MM-DD for display
+              tempDate = record.date.split('-')[1] + "-" + record.date.split('-')[2];
+              recordElement.innerHTML = `${tempDate}: <strong>${record.count}</strong>`;
+        
+              recordsDiv.appendChild(recordElement);
+            });
+        
+            // Now that dates and values are populated, render the chart
+            let ctx = document.getElementById("chart10").getContext("2d");
+            
+            // Initialize the chart with dates and values
+            new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: dates,  // X-axis values (dates)
+                datasets: [{
+                  label: 'Swears',  // Label for the data series
+                  data: values,         // Y-axis values (keypress counts)
+                  borderWidth: 2,
+                  borderColor: '#CF2844',  // Line color 
+                  //tension: 0.2   // Smooth line curve
+                }]
+              },
+              options: {
+
+                scales: {
+                  y: {beginAtZero: true,  
+                      title: {
+                      display: true,
+                      text: 'Number of Keypresses'}
+                  },
+                  x: {title: {
+                      display: true,
+                      text: 'Date'
+                    }}}
+              ,
+            
+                  
+                  }
+            });
+          });
+
+          // Minimize the window
+          document.querySelector('.minimize').addEventListener('click', () => {
+            window.electronAPI.minimizeWindow();
+          });
+        
+          // Maximize or restore the window
+          document.querySelector('.maximize').addEventListener('click', () => {
+            window.electronAPI.maximizeWindow();
+          });
+        
+          // Close the window
+          document.querySelector('.close').addEventListener('click', () => {
+            window.electronAPI.closeWindow();
+          });
+        </script>
+        
+        <canvas id="chart10"  ></canvas>
+        
+      </div>
+    </div>
+    <div class="sidebar">
+      <h3 class="sidebar-h3">OUTBURSTS</h3>
+      <div id="records"></div>
+    </div>
+  </div>
+  <!-- <div class="container"></div> -->
+
+  <!-- <script>
+    window.electronAPI.onUpdateCount((event, count) => {
+      document.getElementById('count').innerText = count;
+    });
+  
+    // Load records on startup
+    window.electronAPI.loadRecords((event, records) => {
+      const recordsDiv = document.getElementById('records');
+      // recordsDiv.innerHTML = '';  // Clear previous content
+      let tempDate, dates=[],values=[];
+
+      records.forEach(record => {
+        dates.push(record.date);      // Add date to dates array
+        values.push(record.count);
+        const recordElement = document.createElement('div');
+        recordElement.className = 'record';
+        tempDate=record.date.split('-')[1] +"-"+ record.date.split('-')[2];
+        recordElement.innerHTML = `${tempDate}: <strong>${record.count}</strong>`;
+        recordsDiv.appendChild(recordElement);
+      });
+    });
+    let ctx = document.getElementById("chart10");
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Sweared',
+        data: values,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  </script> -->
+  
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "name": "swearjar",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-rebuild",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7",
+    "swearjar": "file:"
+  },
+  "devDependencies": {
+    "electron": "^32.1.2",
+    "electron-builder": "^25.0.5",
+    "electron-rebuild": "^3.2.9"
+  },
+  "build": {
+    "appId": "com.sqearjar.app",
+    "productName": "TheSwearJar",
+    "files": [
+      "assets/**/*",
+      "main.js",
+      "preload.js",
+      "index.html",
+      "style.css",
+      "chart.js"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "assets/icon.png"
+    }
+  }
+}
